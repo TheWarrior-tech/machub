@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+<title>Mac Hub</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ============ HOME (list of Macs) ============ -->
+  <section class="screen" id="screen-home">
+    <header class="topbar">
+      <h1 class="topbar-title" id="home-title">Home</h1>
+      <button class="icon-btn round" id="btn-add-mac-top" aria-label="Add Mac">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </header>
+
+    <div class="scroll-area">
+      <div id="home-populated" class="hidden">
+        <h2 class="hero-h1">Welcome to your<br/>Mac Hub</h2>
+        <p class="hero-sub">Select a Mac to check on it. Add Mac to set up another.</p>
+        <div id="mac-list" class="mac-list"></div>
+        <button class="pill-btn" id="btn-add-mac-1">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Add Mac
+        </button>
+      </div>
+
+      <div id="home-empty" class="empty-state">
+        <div class="hero-render">
+          <img src="mac-studio.png" alt="Mac Studio" class="mac-studio-img" />
+        </div>
+        <h2 class="hero-h2">Your Macs</h2>
+        <p class="hero-sub">Add a Mac to set it up and manage its models from this device.</p>
+        <button class="pill-btn" id="btn-add-mac-2">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Add Mac
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DEVICE DETAIL ============ -->
+  <section class="screen hidden" id="screen-device">
+    <header class="topbar topbar-detail">
+      <button class="pill-tag" id="btn-back-home">Your Macs</button>
+      <span class="topbar-title-sm" id="device-title">Mac</span>
+      <div class="topbar-actions">
+        <button class="icon-btn round" id="btn-share" aria-label="Share access">
+          <svg viewBox="0 0 24 24"><path d="M16 8a3 3 0 1 0-2.83-4H13a3 3 0 1 0 0 6c.35 0 .68-.07 1-.18M8 13a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm0 0 8-4.5M8 13l8 4.5"/></svg>
+        </button>
+        <button class="icon-btn round" id="btn-refresh" aria-label="Refresh">
+          <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="scroll-area">
+      <div class="device-hero">
+        <img src="mac-studio.png" alt="Mac Studio" class="mac-studio-img small" />
+        <div class="device-name" id="device-name-lg">Mac Studio</div>
+        <div class="device-host" id="device-host">tailscale-hostname.local</div>
+        <p class="error-detail hidden" id="device-error-detail"></p>
+      </div>
+
+      <div class="card-list">
+        <div class="status-card">
+          <div class="status-icon blue"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r="0.6" fill="currentColor"/><circle cx="7" cy="17" r="0.6" fill="currentColor"/></svg></div>
+          <div class="status-text">
+            <div class="status-title">Connection</div>
+            <div class="status-sub" id="stat-runtime-sub">Checking…</div>
+          </div>
+          <div class="status-value" id="stat-runtime-val">—</div>
+        </div>
+
+        <div class="status-card">
+          <div class="status-icon blue"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <div class="status-text">
+            <div class="status-title">Model service</div>
+            <div class="status-sub" id="stat-model-sub">No active model</div>
+          </div>
+          <div class="status-value" id="stat-model-val">—</div>
+        </div>
+
+        <div class="status-card" id="row-models-installed">
+          <div class="status-icon blue"><svg viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5ZM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+          <div class="status-text">
+            <div class="status-title">Models</div>
+            <div class="status-sub" id="stat-models-sub">— available on this Mac</div>
+          </div>
+          <div class="status-value" id="stat-models-val">0 installed</div>
+        </div>
+
+        <div class="status-card">
+          <div class="status-icon blue"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16M15 4v16M4 9h16M4 15h16"/></svg></div>
+          <div class="status-text">
+            <div class="status-title">Unified memory</div>
+            <div class="status-sub" id="stat-mem-sub">—</div>
+          </div>
+          <div class="status-value" id="stat-mem-val">Normal</div>
+        </div>
+      </div>
+
+      <h3 class="section-h">Available models</h3>
+      <div id="available-models" class="card-list"></div>
+
+      <h3 class="section-h">Installed models</h3>
+      <div id="installed-models" class="card-list"></div>
+    </div>
+  </section>
+
+  <!-- ============ ADD MAC FLOW ============ -->
+  <section class="screen hidden" id="screen-add">
+    <header class="topbar">
+      <button class="icon-btn round" id="btn-add-cancel" aria-label="Back">
+        <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+    </header>
+    <div class="scroll-area">
+      <div class="setup-progress-row">
+        <span>Setup</span>
+        <span id="setup-step-label">Step 1 of 3</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="setup-progress-fill"></div></div>
+
+      <div id="setup-step-1" class="setup-step">
+        <div class="hero-render small-top">
+          <img src="mac-studio.png" alt="Mac Studio" class="mac-studio-img" />
+        </div>
+        <h2 class="hero-h2">Name this Mac</h2>
+        <p class="hero-sub">Give it a name you'll recognize on the home screen.</p>
+        <input class="text-input" id="input-name" placeholder="e.g. Finley's Mac Studio" />
+      </div>
+
+      <div id="setup-step-2" class="setup-step hidden">
+        <div class="hero-render small-top">
+          <img src="mac-studio.png" alt="Mac Studio" class="mac-studio-img" />
+        </div>
+        <h2 class="hero-h2">Connect to Ollama</h2>
+        <p class="hero-sub">Enter the address Ollama is reachable on \u2014 a Tailscale hostname, a local network IP, or any address you've exposed yourself \u2014 with the port (usually 11434).</p>
+        <input class="text-input" id="input-host" placeholder="192.168.1.42:11434 or mac.tailXXXX.ts.net:11434" />
+        <p class="hint-text">On the Mac: run <code>OLLAMA_ORIGINS=* ollama serve</code>. Any address that phone can reach works \u2014 same Wi-Fi network, Tailscale, or a port you've forwarded/tunneled yourself.</p>
+      </div>
+
+      <div id="setup-step-3" class="setup-step hidden">
+        <div class="hero-render small-top" id="connect-render">
+          <img src="mac-studio.png" alt="Mac Studio" class="mac-studio-img" />
+          <div class="check-badge hidden" id="connect-check">
+            <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+          </div>
+        </div>
+        <h2 class="hero-h2" id="connect-status-h">Connecting…</h2>
+        <p class="hero-sub" id="connect-status-sub">Reaching your Mac over the tailnet.</p>
+        <p class="error-detail hidden" id="connect-error-detail"></p>
+      </div>
+    </div>
+    <div class="setup-footer">
+      <button class="pill-btn wide" id="btn-setup-next">Continue</button>
+    </div>
+  </section>
+
+  <!-- ============ CHATS LIST ============ -->
+  <section class="screen hidden" id="screen-chats">
+    <header class="topbar">
+      <h1 class="topbar-title">Chats</h1>
+      <button class="icon-btn round" id="btn-new-chat" aria-label="New chat">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </header>
+    <div class="scroll-area">
+      <div id="chats-empty" class="empty-state">
+        <div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <h2 class="hero-h2">No chats yet</h2>
+        <p class="hero-sub">Start a conversation with a model running on one of your Macs.</p>
+        <button class="pill-btn" id="btn-new-chat-2">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          New chat
+        </button>
+      </div>
+      <div id="chats-list" class="mac-list hidden"></div>
+    </div>
+  </section>
+
+  <!-- ============ CHAT THREAD ============ -->
+  <section class="screen hidden" id="screen-chat">
+    <header class="topbar topbar-detail">
+      <button class="icon-btn round" id="btn-chat-back" aria-label="Back">
+        <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <span class="topbar-title-sm" id="chat-model-label">Select a model</span>
+      <button class="pill-tag sm" id="btn-model-picker">Change</button>
+    </header>
+    <div class="scroll-area" id="chat-messages"></div>
+    <div class="chat-input-bar">
+      <input class="chat-input" id="chat-input" placeholder="Message" />
+      <button class="send-btn" id="btn-send" aria-label="Send">
+        <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ MODEL PICKER SHEET ============ -->
+  <div class="sheet-backdrop hidden" id="model-sheet-backdrop">
+    <div class="sheet" id="model-sheet">
+      <div class="sheet-grabber"></div>
+      <div class="sheet-header">
+        <h3>Choose a model</h3>
+        <span class="sheet-sub" id="model-sheet-sub">On this Mac</span>
+      </div>
+      <div class="sheet-list" id="model-sheet-list"></div>
+    </div>
+  </div>
+
+  <!-- ============ ACTIVITY ============ -->
+  <section class="screen hidden" id="screen-activity">
+    <header class="topbar"><h1 class="topbar-title">Activity</h1></header>
+    <div class="scroll-area">
+      <div id="activity-list" class="card-list"></div>
+      <div id="activity-empty" class="empty-state">
+        <div class="empty-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+        <h2 class="hero-h2">Nothing yet</h2>
+        <p class="hero-sub">Model downloads, pulls, and connection events will show up here.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MORE ============ -->
+  <section class="screen hidden" id="screen-more">
+    <header class="topbar"><h1 class="topbar-title">More</h1></header>
+    <div class="scroll-area">
+      <h3 class="section-h">Your Macs</h3>
+      <div id="more-mac-list" class="card-list"></div>
+
+      <h3 class="section-h">About</h3>
+      <div class="card-list">
+        <div class="simple-row">
+          <span>Mac Hub</span>
+          <span class="dim">1.0.0</span>
+        </div>
+        <div class="simple-row">
+          <span>Built for</span>
+          <span class="dim">Atugil Intelligence</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BOTTOM TAB BAR ============ -->
+  <nav class="tabbar" id="tabbar">
+    <button class="tab-btn active" data-tab="home">
+      <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="tab-btn" data-tab="chats">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Chats</span>
+    </button>
+    <button class="tab-btn" data-tab="activity">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      <span>Activity</span>
+    </button>
+    <button class="tab-btn" data-tab="more">
+      <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+      <span>More</span>
+    </button>
+  </nav>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
